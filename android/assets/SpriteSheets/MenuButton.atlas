@@ -1,0 +1,20 @@
+
+MenuButton.png
+size: 256,64
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+Button(DOWN)
+  rotate: false
+  xy: 2, 2
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
+Button(UP)
+  rotate: false
+  xy: 104, 2
+  size: 100, 50
+  orig: 100, 50
+  offset: 0, 0
+  index: -1
