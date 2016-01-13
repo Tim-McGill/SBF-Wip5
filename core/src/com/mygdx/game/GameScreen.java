@@ -28,19 +28,18 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class GameScreen implements Screen, InputProcessor {
     // vars
     SpriteBatch batch;
-    Texture imgPlayer;
+    Texture imgPlayer,imgDoor[]= new Texture[4];
     //stage and game
     Game game;
     Stage stage;
     //tiled maps
     TiledMap tiledMap;
     TiledMapRenderer tiledMapRenderer;
-    TiledMapTileLayer collisionlayer;
     //camera and view ports
     OrthographicCamera camera;
     boolean arbInput[] = new boolean[6];
     boolean collisionX = false, collisionY = false;
-    int nDx,nDy,nPx=320,nPy=2432;
+    int nDx,nDy,nPx=320,nPy=2432, nLDx[]= new int[4],nLDy[]= new int[4],nLDp=0;
 
 
 
@@ -150,17 +149,17 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void show() {
 
-
         camera = new OrthographicCamera();
 
         imgPlayer = new Texture ("player1.png");
-
-
+        for (int i=0; i<4; i++) {
+            imgDoor[i]=new Texture("BaseFLW.png");
+           // nLDx[i]=nLDy[i]=0;
+        }
         batch = new SpriteBatch();
         stage = new Stage(new FillViewport(320,180,camera));
         stage.getViewport().setCamera(camera);
         stage.getViewport().apply();
-
 
 
         /**player actor
@@ -175,6 +174,8 @@ public class GameScreen implements Screen, InputProcessor {
 
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
+        objectplace();
+
         Gdx.input.setInputProcessor(this);
 
         //player.setPosition(320,2432);
@@ -187,7 +188,9 @@ public class GameScreen implements Screen, InputProcessor {
     public void render(float delta) {
         // camera and player
         camera.translate(nDx, nDy);
-        collision();
+        //collision();
+        nPx=nPx+nDx;
+        nPy=nPy+nDy;
 
         // render
         tiledMapRenderer.setView((OrthographicCamera) stage.getCamera());
@@ -198,81 +201,33 @@ public class GameScreen implements Screen, InputProcessor {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(imgPlayer, nPx, nPy);
+        for (int i=0; i<4;i++){
+            batch.draw(imgDoor[i], nLDx[i],nLDy[i]);
+        }
         batch.end();
 
 
     }
     // this comes from here: https://www.youtube.com/watch?v=DOpqkaX9844
-    public void collision (){
-        TiledMapTileLayer collisionlayer = (TiledMapTileLayer)tiledMap.getLayers().get("walls and wall  caps");
-        float noldX=nPx, noldY = nPy, tiledwidth = collisionlayer.getTileWidth(), tiledHeight = collisionlayer.getTileHeight();
-        collisionX = new Boolean(false); collisionY = new Boolean(false);
-        nPx=nPx+nDx;
-        // x to the left
-        if (nDx<0){
-            // top left
-            collisionX = collisionlayer.getCell((int)(nPx/tiledwidth),(int)(nPy+18/tiledHeight)).getTile().getProperties().containsKey("blocked");
+    // and from http://www.gamefromscratch.com/post/2014/06/18/LibGDX-Tutorial-11-Tiled-Maps-Part-3-Using-Properties-and-Tile-Map-animations.aspx
+    public void objectplace (){
+        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
+        for(int x = 0; x < layer.getWidth();x++){
+            for(int y = 0; y < layer.getHeight();y++){
+                TiledMapTileLayer.Cell cell = layer.getCell(x,y);
+                Object property = cell.getTile().getProperties().get("Door");
+                if(property != null){
+                  nLDx[nLDp]=x*32;
+                  nLDy[nLDp]=y*32;
+                    nLDp++;
 
-            // mid left
-            if (!collisionX)
-            collisionX = collisionlayer.getCell((int)(nPx/tiledwidth),(int)((nPy+18)/2/tiledHeight)).getTile().getProperties().containsKey("blocked");
-            // bottom left
-            if (!collisionX)
-            collisionX = collisionlayer.getCell((int)(nPx/tiledwidth),(int)(nPy/tiledHeight)).getTile().getProperties().containsKey("blocked");
-        }
-        // x to the right
-        else if (nDx>0){
-            //top right
-            collisionX = collisionlayer.getCell((int)(nPx+11/tiledwidth),(int)(nPy+18/tiledHeight)).getTile().getProperties().containsKey("blocked");
-
-            //mid right
-            if (!collisionX)
-                collisionX = collisionlayer.getCell((int)(nPx+11/tiledwidth),(int)((nPy+18)/2/tiledHeight)).getTile().getProperties().containsKey("blocked");
-
-            //bottom right
-            if (!collisionX)
-                collisionX = collisionlayer.getCell((int)(nPx+11/tiledwidth),(int)(nPy/tiledHeight)).getTile().getProperties().containsKey("blocked");
-
-        }
-        //
-        if (collisionX){
-            System.out.println("XC");
-            nPx=(int)noldX;
-            nDx=0;
-        }
-        nPy=nPy+nDy;
-        // y up
-        if (nDx>0){
-            // up left
-                collisionY = collisionlayer.getCell((int)((nPx)/tiledwidth),(int)(nPy+18/tiledHeight)).getTile().getProperties().containsKey("blocked");
-            // up mid
-            if (!collisionY)
-                collisionY = collisionlayer.getCell((int)((nPx+11)/2/tiledwidth),(int)(nPy+18/tiledHeight)).getTile().getProperties().containsKey("blocked");
-            // up right
-            if (!collisionY)
-                collisionY = collisionlayer.getCell((int)((nPx+11)/tiledwidth),(int)(nPy+18/tiledHeight)).getTile().getProperties().containsKey("blocked");
-
-        }
-        // y down
-        else if (nDx<0){
-            // bottom left
-            collisionY = collisionlayer.getCell((int)(nPx/tiledwidth),(int)(nPy/tiledHeight)).getTile().getProperties().containsKey("blocked");
-            // bottom mid
-            if(!collisionY){
-                collisionY = collisionlayer.getCell((int)((nPx+11)/2/tiledwidth),(int)(nPy/tiledHeight)).getTile().getProperties().containsKey("blocked");
+                } else{
+                    System.out.println("no door at x "+x+ " y "+y);
+                    System.out.println("");
+                }
             }
-            // bottom right
-            if (!collisionY)
-                collisionY = collisionlayer.getCell((int)((nPx+11)/tiledwidth),(int)(nPy/tiledHeight)).getTile().getProperties().containsKey("blocked");
-        }
-
-        if (collisionY){
-            System.out.println("YC");
-            nPy=(int)noldY;
-            nDy=0;
         }
     }
-
     @Override
     public void resize(int width, int height) {
 
