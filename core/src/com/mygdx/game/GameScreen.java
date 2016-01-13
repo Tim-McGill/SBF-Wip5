@@ -171,17 +171,12 @@ public class GameScreen implements Screen, InputProcessor {
         **/
         // tiled map
         tiledMap = new TmxMapLoader().load("Testlevel.tmx");
-
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-
         objectplace();
-
         Gdx.input.setInputProcessor(this);
 
         //player.setPosition(320,2432);
         camera.position.set(320,2432 , 0);
-
-
     }
 
     @Override
@@ -210,24 +205,36 @@ public class GameScreen implements Screen, InputProcessor {
     }
     // this comes from here: https://www.youtube.com/watch?v=DOpqkaX9844
     // and from http://www.gamefromscratch.com/post/2014/06/18/LibGDX-Tutorial-11-Tiled-Maps-Part-3-Using-Properties-and-Tile-Map-animations.aspx
-    public void objectplace (){
+    public void objectplace () {
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-        for(int x = 0; x < layer.getWidth();x++){
-            for(int y = 0; y < layer.getHeight();y++){
-                TiledMapTileLayer.Cell cell = layer.getCell(x,y);
+        for (int x = 0; x < layer.getWidth(); x++) {
+            for (int y = 0; y < layer.getHeight(); y++) {
+                TiledMapTileLayer.Cell cell = layer.getCell(x, y);
                 Object property = cell.getTile().getProperties().get("Door");
-                if(property != null){
-                  nLDx[nLDp]=x*32;
-                  nLDy[nLDp]=y*32;
+                if (property != null) {
+                    nLDx[nLDp] = x * 32;
+                    nLDy[nLDp] = y * 32;
                     nLDp++;
 
-                } else{
-                    System.out.println("no door at x "+x+ " y "+y);
+                } else {
+                    System.out.println("no door at x " + x + " y " + y);
                     System.out.println("");
                 }
             }
         }
     }
+  public void Wallcollision()  {
+      TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
+      //moving up
+
+      // moving down
+
+      // moving left
+
+      //moving right
+
+    }
+
     @Override
     public void resize(int width, int height) {
 
