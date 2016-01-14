@@ -181,11 +181,9 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
+        Wallcollision();
         // camera and player
         camera.translate(nDx, nDy);
-        //collision();
-        nPx=nPx+nDx;
-        nPy=nPy+nDy;
 
         // render
         tiledMapRenderer.setView((OrthographicCamera) stage.getCamera());
@@ -224,14 +222,47 @@ public class GameScreen implements Screen, InputProcessor {
         }
     }
   public void Wallcollision()  {
+      //setting the old values of x and y
+      int noldX=nPx,noldY=nPy;
       TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-      //moving up
-
-      // moving down
-
-      // moving left
-
+      // adding the new movement
+      nPx=nPx+nDx;
+      nPy=nPy+nDy;
       //moving right
+      if (nDx>0){
+          TiledMapTileLayer.Cell cell = layer.getCell((nPx+11)/32,nPy/32);
+          Object property = cell.getTile().getProperties().get("blocked");
+          if (property != null) {
+            nPx=noldX;
+            nPy=noldY;
+              nDx=nDy=0;
+          }
+      } else if (nDx<0) {
+          TiledMapTileLayer.Cell cell = layer.getCell(nPx/32,nPy/32);
+          Object property = cell.getTile().getProperties().get("blocked");
+          if (property != null) {
+              nPx=noldX;
+             // nPy=noldY;
+              nDx=nDy=0;
+          }
+      }
+      else if (nDy<0) {
+          TiledMapTileLayer.Cell cell = layer.getCell(nPx / 32, nPy / 32);
+          Object property = cell.getTile().getProperties().get("blocked");
+          if (property != null) {
+              //nPx = noldX;
+              nPy=noldY;
+              nDy=nDx = 0;
+          }
+      }  else if (nDy>0) {
+          TiledMapTileLayer.Cell cell = layer.getCell(nPx / 32, nPy / 32);
+          Object property = cell.getTile().getProperties().get("blocked");
+          if (property != null) {
+              //nPx = noldX;
+              nPy = noldY;
+              nDy=nDx = 0;
+          }
+      }
 
     }
 
