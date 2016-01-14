@@ -263,6 +263,9 @@ public class GameScreen implements Screen, InputProcessor {
               nDy=nDx = 0;
           }
       }
+    }
+
+    public void Telcheck(){
 
     }
 
