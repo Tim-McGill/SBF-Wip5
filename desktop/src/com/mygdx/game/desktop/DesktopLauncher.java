@@ -7,7 +7,7 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.mygdx.game.Main;
 
 public class DesktopLauncher {
-	static int nWidth=640,nHight=320;
+	static int nWidth=1280,nHight=720;
 	static Boolean bFullScreen = false;
 	public  void gamesettings(int nWidth_, int nHight_, Boolean bFullScreen_){
 

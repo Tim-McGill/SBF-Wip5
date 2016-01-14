@@ -148,10 +148,13 @@ public class GameScreen implements Screen, InputProcessor {
         camera = new OrthographicCamera();
 
         imgPlayer = new Texture ("player1.png");
-        for (int i=0; i<4; i++) {
-            imgDoor[i]=new Texture("BaseFLW.png");
-            if (i<2){
-                imgKey[i]=new Texture("BaseKey.png");
+        for (int i=0; i<90; i++) {
+            imgEnemies[i]= new Texture("player2.png");
+            if (i<4) {
+                imgDoor[i] = new Texture("BaseFLW.png");
+                if (i < 2) {
+                    imgKey[i] = new Texture("BaseKey.png");
+                }
             }
         }
         batch = new SpriteBatch();
@@ -183,10 +186,13 @@ public class GameScreen implements Screen, InputProcessor {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
-        for (int i=0; i<4;i++){
-            batch.draw(imgDoor[i], nLDx[i], nLDy[i]);
-            if (i<2){
-                batch.draw(imgKey[i], nKeyx[i],nKeyy[i]);
+        for (int i=0; i<90;i++) {
+            batch.draw(imgEnemies[i],nEx[i],nEy[i]);
+            if (i < 4) {
+                batch.draw(imgDoor[i], nLDx[i], nLDy[i]);
+                if (i < 2) {
+                    batch.draw(imgKey[i], nKeyx[i], nKeyy[i]);
+                }
             }
         }
         batch.draw(imgPlayer, nPx, nPy);
@@ -198,6 +204,7 @@ public class GameScreen implements Screen, InputProcessor {
     // and from http://www.gamefromscratch.com/post/2014/06/18/LibGDX-Tutorial-11-Tiled-Maps-Part-3-Using-Properties-and-Tile-Map-animations.aspx
     public void objectplace () {
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
+        int nNumES=0;
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
                 TiledMapTileLayer.Cell cell = layer.getCell(x, y);
@@ -221,7 +228,13 @@ public class GameScreen implements Screen, InputProcessor {
                 }
                 Object BasicEnemies= cell.getTile().getProperties().get("BE");
                 if(BasicEnemies != null){
-
+                    for(int i =0; i<10;i++) {
+                        int nW= i + 10*(nNumES);
+                        nEx[nW]=(x * 32)+2*i;
+                        nEy[nW]=(y * 32)+1*i;
+                        System.out.println(nEx);
+                    }
+                    nNumES++;
                 }
             }
         }
