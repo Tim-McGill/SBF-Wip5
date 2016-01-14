@@ -16,10 +16,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Created by tim on 2016-01-03.
@@ -28,7 +25,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class GameScreen implements Screen, InputProcessor {
     // vars
     SpriteBatch batch;
-    Texture imgPlayer,imgDoor[]= new Texture[4];
+    Texture imgPlayer,imgDoor[]= new Texture[4],imgKey[]= new Texture[2],imgEnemies[]= new Texture[90];
     //stage and game
     Game game;
     Stage stage;
@@ -38,8 +35,8 @@ public class GameScreen implements Screen, InputProcessor {
     //camera and view ports
     OrthographicCamera camera;
     boolean arbInput[] = new boolean[6];
-    boolean collisionX = false, collisionY = false;
-    int nDx,nDy,nPx=320,nPy=2432, nLDx[]= new int[4],nLDy[]= new int[4],nLDp=0;
+    int nDx,nDy,nPx=320,nPy=2432, nLDx[]= new int[4],nLDy[]= new int[4],nLDp=0,nEx[]=new int[90],nEy[]= new int[90],nKey=0;
+    int nKeyx[]=new int[2], nKeyy[] = new int[2], nKeyp=0, nTelx, nTely;
 
 
 
@@ -132,7 +129,6 @@ public class GameScreen implements Screen, InputProcessor {
         }
         if (arbInput[4]) {
             nDx = -2;
-
         }
         if (arbInput[5]) {
 
@@ -154,37 +150,30 @@ public class GameScreen implements Screen, InputProcessor {
         imgPlayer = new Texture ("player1.png");
         for (int i=0; i<4; i++) {
             imgDoor[i]=new Texture("BaseFLW.png");
-           // nLDx[i]=nLDy[i]=0;
+            if (i<2){
+                imgKey[i]=new Texture("BaseKey.png");
+            }
         }
         batch = new SpriteBatch();
         stage = new Stage(new FillViewport(320,180,camera));
         stage.getViewport().setCamera(camera);
         stage.getViewport().apply();
 
-
-        /**player actor
-        Player player = new Player();
-        MoveByAction move = new MoveByAction();
-        move.setAmount(nDx, nDy);
-        player.addAction(move);
-        stage.addActor(player);
-        **/
         // tiled map
         tiledMap = new TmxMapLoader().load("Testlevel.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         objectplace();
         Gdx.input.setInputProcessor(this);
-
-        //player.setPosition(320,2432);
-        camera.position.set(320,2432 , 0);
+        camera.position.set(320, 2432, 0);
     }
 
     @Override
     public void render(float delta) {
         Wallcollision();
+        pickup();
+        TelCheck();
         // camera and player
         camera.translate(nDx, nDy);
-
         // render
         tiledMapRenderer.setView((OrthographicCamera) stage.getCamera());
         tiledMapRenderer.render();
@@ -193,10 +182,14 @@ public class GameScreen implements Screen, InputProcessor {
         //stage.draw();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        batch.draw(imgPlayer, nPx, nPy);
+
         for (int i=0; i<4;i++){
-            batch.draw(imgDoor[i], nLDx[i],nLDy[i]);
+            batch.draw(imgDoor[i], nLDx[i], nLDy[i]);
+            if (i<2){
+                batch.draw(imgKey[i], nKeyx[i],nKeyy[i]);
+            }
         }
+        batch.draw(imgPlayer, nPx, nPy);
         batch.end();
 
 
@@ -208,15 +201,27 @@ public class GameScreen implements Screen, InputProcessor {
         for (int x = 0; x < layer.getWidth(); x++) {
             for (int y = 0; y < layer.getHeight(); y++) {
                 TiledMapTileLayer.Cell cell = layer.getCell(x, y);
-                Object property = cell.getTile().getProperties().get("Door");
-                if (property != null) {
+                Object doors = cell.getTile().getProperties().get("Door");
+                Object Keys= cell.getTile().getProperties().get("keys");
+                if (doors != null) {
                     nLDx[nLDp] = x * 32;
                     nLDy[nLDp] = y * 32;
                     nLDp++;
+                }
+                if(Keys != null){
+                    System.out.println("key at "+x+y);
+                    nKeyx[nKeyp] = x * 32;
+                    nKeyy[nKeyp] = y * 32;
+                    nKeyp++;
+                }
+                Object Tel_= cell.getTile().getProperties().get("Tel_");
+                if(Tel_ != null){
+                     nTelx = x * 32;
+                     nTely = y * 32;
+                }
+                Object BasicEnemies= cell.getTile().getProperties().get("BE");
+                if(BasicEnemies != null){
 
-                } else {
-                    System.out.println("no door at x " + x + " y " + y);
-                    System.out.println("");
                 }
             }
         }
@@ -226,6 +231,7 @@ public class GameScreen implements Screen, InputProcessor {
       int noldX=nPx,noldY=nPy;
       TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
       // adding the new movement
+      DoorCheck(noldY);
       nPx=nPx+nDx;
       nPy=nPy+nDy;
       //moving right
@@ -245,8 +251,7 @@ public class GameScreen implements Screen, InputProcessor {
              // nPy=noldY;
               nDx=nDy=0;
           }
-      }
-      else if (nDy<0) {
+      } else if (nDy<0) {
           TiledMapTileLayer.Cell cell = layer.getCell(nPx / 32, nPy / 32);
           Object property = cell.getTile().getProperties().get("blocked");
           if (property != null) {
@@ -264,8 +269,44 @@ public class GameScreen implements Screen, InputProcessor {
           }
       }
     }
+    public void DoorCheck( int noldY){
+        for(int i=0; i<4; i++){
+            if(nPx>=nLDx[i]&&nPx<nLDx[i]+43&&nPy>=nLDy[i]&&nPy<nLDy[i]+10){
+                KeyCheck(i);
+                nPy = noldY-1;
+                camera.translate(0,-1);
+                nDy=0;
+                //nDx=0;
+            }
+        }
+    }
 
-    public void Telcheck(){
+    public void KeyCheck(int i_) {
+        if(nKey>0){
+            nLDy[i_]=nLDx[i_]=-1000;
+            nKey--;
+        }
+    }
+
+    public void pickup(){
+        for (int i=0; i<2; i++) {
+            if(nKeyx[i]>=nPx&&nKeyx[i]+6<=nPx+11&&nKeyy[i]>=nPy&&nKeyy[i]+11<=nPy+18){
+                nKeyx[i]=nKeyy[i]=-1000;
+                nKey++;
+                System.out.println("key");
+            }
+        }
+    }
+
+    public void TelCheck(){
+        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
+        TiledMapTileLayer.Cell cell = layer.getCell((nPx)/32,nPy/32);
+        Object property = cell.getTile().getProperties().get("Tel");
+        if (property != null){
+            nPx=nTelx;
+            nPy=nTely;
+            camera.position.set(nTelx, nTely, 0);
+        }
 
     }
 
