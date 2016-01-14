@@ -216,6 +216,7 @@ public class GameScreen implements Screen, InputProcessor {
                     nLDp++;
                 }
                 if(Keys != null){
+
                     System.out.println("key at "+x+y);
                     nKeyx[nKeyp] = x * 32;
                     nKeyy[nKeyp] = y * 32;
@@ -230,9 +231,20 @@ public class GameScreen implements Screen, InputProcessor {
                 if(BasicEnemies != null){
                     for(int i =0; i<10;i++) {
                         int nW= i + 10*(nNumES);
-                        nEx[nW]=(x * 32)+2*i;
-                        nEy[nW]=(y * 32)+1*i;
-                        System.out.println(nEx);
+                        System.out.println(nW);
+                        if(i<2){
+                            nEx[nW]=(x * 32)+4*i;
+                            nEy[nW]=(y * 32)+3*i;
+                        } if(i<4&&2<i){
+                            nEx[nW]=(x * 32)-10-3*i;
+                            nEy[nW]=(y * 32)+2*i;
+                        }if(i<7&&4<i){
+                            nEx[nW]=(x * 32)+2*i;
+                            nEy[nW]=(y * 32)+32+2*i;
+                        }if(i<10&&7<i){
+                            nEx[nW]=(x * 32)+2*i;
+                            nEy[nW]=(y * 32)-2-2*i;
+                        }
                     }
                     nNumES++;
                 }
