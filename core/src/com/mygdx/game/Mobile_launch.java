@@ -4,6 +4,7 @@
 
 package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
+import com.mygdx.game.GameScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,7 +20,8 @@ public class Mobile_launch extends ApplicationAdapter implements InputProcessor 
     int nJoyStickX = -200, nJoyStickY = -200, nJoyStickNubX = -136, nJoyStickNubY = -136, nDx, nDy, nScreen =1, nInput=1;
     boolean arbInput[] = new boolean[6];// 4 directions 1 attack 1 pause
     // other files
-    Main main;
+    GameScreen gameScreen;
+
 
     // base code
     //______________________________________________________________________________________________
@@ -29,16 +31,13 @@ public class Mobile_launch extends ApplicationAdapter implements InputProcessor 
         batch = new SpriteBatch();
         imgBackground = new Texture("touchBackground.png");
         imgNub = new Texture("touchKnob.png");
-        // other files
-        main = new Main();
-        main.create();
         // input
+        System.out.println("Android");
         Gdx.input.setInputProcessor(this);
 
     }
     public void render () {
-        // other files
-        main.render();
+        System.out.println("Android_render");
         // joy stick and buttons
         batch.begin();
         batch.draw(imgBackground, nJoyStickX, nJoyStickY);
@@ -46,9 +45,8 @@ public class Mobile_launch extends ApplicationAdapter implements InputProcessor 
         batch.end();
 
     }
-
-    public void setScreen (int nScreen_){
-        nScreen = nScreen_;
+    public boolean[] getinput(){
+        return arbInput;
     }
     //______________________________________________________________________________________________
 
@@ -57,10 +55,8 @@ public class Mobile_launch extends ApplicationAdapter implements InputProcessor 
     //______________________________________________________________________________________________
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        System.out.println(screenX);
         // move joystick into view
-        if (nScreen==1){
-
-        } else if (nScreen ==2) {
             if (nInput == 1) {
                 if (screenX < Gdx.graphics.getWidth() / 2) {
                     nJoyStickX = screenX - 100;
@@ -71,10 +67,7 @@ public class Mobile_launch extends ApplicationAdapter implements InputProcessor 
                 if (screenX > Gdx.graphics.getWidth() / 2) {
                     arbInput[5] = true; //attack
                 }
-               // main.input(arbInput);
-            }
-        }else if (nInput==2){
-            // thomas' touch around player code will go here.
+                //gameScreen.input(arbInput);
             }
         return false;
     }
@@ -99,8 +92,6 @@ public class Mobile_launch extends ApplicationAdapter implements InputProcessor 
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         // find and move the nub if it's on the left side of the screen
         // tried to use this http://www.bigerstaff.com/libgdx-touchpad-example/
-        if (nScreen==2) {
-            if (nInput == 1) {
                 if (screenX < Gdx.graphics.getWidth() / 2) {
                     nJoyStickNubX = screenX - 36;
                     nJoyStickNubY = Gdx.graphics.getHeight() - screenY - 36;
@@ -136,12 +127,8 @@ public class Mobile_launch extends ApplicationAdapter implements InputProcessor 
                         arbInput[4] = true;//left
                         arbInput[3] = false;
                     }
-                   // main.input(arbInput);
+                   // gameScreen.input(arbInput);
                 }
-            }
-        } else if (nInput==2){
-            // thomas' touch around player code will go here.
-        }
         return false;
     }
     //needed to use implements InputProcessor don't know why, but it's here

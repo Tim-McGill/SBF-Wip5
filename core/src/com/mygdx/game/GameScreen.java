@@ -25,7 +25,7 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 public class GameScreen implements Screen, InputProcessor {
     // vars
     SpriteBatch batch;
-    Texture imgPlayer,imgDoor[]= new Texture[4],imgKey[]= new Texture[2],imgEnemies[]= new Texture[90];
+    Sprite imgPlayer,imgDoor[]= new Sprite[4],imgKey[]= new Sprite[2],imgEnemies[]= new Sprite[90];
     //stage and game
     Game game;
     Stage stage;
@@ -34,14 +34,20 @@ public class GameScreen implements Screen, InputProcessor {
     TiledMapRenderer tiledMapRenderer;
     //camera and view ports
     OrthographicCamera camera;
-    boolean arbInput[] = new boolean[6];
+    boolean arbInput[] = new boolean[6], arbAgro[]= new boolean[90];
     int nDx,nDy,nPx=320,nPy=2432, nLDx[]= new int[4],nLDy[]= new int[4],nLDp=0,nEx[]=new int[90],nEy[]= new int[90],nKey=0;
     int nKeyx[]=new int[2], nKeyy[] = new int[2], nKeyp=0, nTelx, nTely;
+    // other files
+//    Mobile_launch mobile_launch;
 
 
 
     public GameScreen(Game game){
         this.game = game;
+    }
+
+    public void input(boolean arbInput_[]) {
+       arbInput=arbInput_;
     }
 
     @Override
@@ -93,6 +99,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
         return false;
     }
 
@@ -147,13 +154,13 @@ public class GameScreen implements Screen, InputProcessor {
 
         camera = new OrthographicCamera();
 
-        imgPlayer = new Texture ("player1.png");
+        imgPlayer = new Sprite(new Texture(Gdx.files.internal("player1"+".png")));
         for (int i=0; i<90; i++) {
-            imgEnemies[i]= new Texture("player2.png");
+            imgEnemies[i]= new Sprite(new Texture(Gdx.files.internal("player2"+".png")));
             if (i<4) {
-                imgDoor[i] = new Texture("BaseFLW.png");
+                imgDoor[i] = new Sprite(new Texture(Gdx.files.internal("BaseFLW.png")));
                 if (i < 2) {
-                    imgKey[i] = new Texture("BaseKey.png");
+                    imgKey[i] = new Sprite(new Texture(Gdx.files.internal("BaseKey.png")));
                 }
             }
         }
@@ -168,6 +175,8 @@ public class GameScreen implements Screen, InputProcessor {
         objectplace();
         Gdx.input.setInputProcessor(this);
         camera.position.set(320, 2432, 0);
+     //   mobile_launch= new Mobile_launch();
+     //   mobile_launch.create();
     }
 
     @Override
@@ -175,17 +184,21 @@ public class GameScreen implements Screen, InputProcessor {
         Wallcollision();
         pickup();
         TelCheck();
+        ai();
         // camera and player
         camera.translate(nDx, nDy);
         // render
         tiledMapRenderer.setView((OrthographicCamera) stage.getCamera());
         tiledMapRenderer.render();
         stage.getCamera().update();
-       // stage.act();
-        //stage.draw();
+        stage.draw();
         batch.setProjectionMatrix(camera.combined);
+        spriterender();
+        //mobile_launch.render();
+    }
+    public void spriterender(){
         batch.begin();
-
+        //  mobile_launch.getinput();
         for (int i=0; i<90;i++) {
             batch.draw(imgEnemies[i],nEx[i],nEy[i]);
             if (i < 4) {
@@ -197,7 +210,6 @@ public class GameScreen implements Screen, InputProcessor {
         }
         batch.draw(imgPlayer, nPx, nPy);
         batch.end();
-
 
     }
     // this comes from here: https://www.youtube.com/watch?v=DOpqkaX9844
@@ -216,7 +228,6 @@ public class GameScreen implements Screen, InputProcessor {
                     nLDp++;
                 }
                 if(Keys != null){
-
                     System.out.println("key at "+x+y);
                     nKeyx[nKeyp] = x * 32;
                     nKeyy[nKeyp] = y * 32;
@@ -296,7 +307,7 @@ public class GameScreen implements Screen, InputProcessor {
     }
     public void DoorCheck( int noldY){
         for(int i=0; i<4; i++){
-            if(nPx>=nLDx[i]&&nPx<nLDx[i]+43&&nPy>=nLDy[i]&&nPy<nLDy[i]+10){
+            if(nPx>=nLDx[i]-5&&nPx<nLDx[i]+43&&nPy>=nLDy[i]&&nPy<nLDy[i]+10){
                 KeyCheck(i);
                 nPy = noldY-1;
                 camera.translate(0,-1);
@@ -332,8 +343,45 @@ public class GameScreen implements Screen, InputProcessor {
             nPy=nTely;
             camera.position.set(nTelx, nTely, 0);
         }
+    }
+
+    public void ai (){
+        for (int i=0; i<90; i++) {
+                int nDex = ((nPx) - (nEx[i]));
+                int nDey = ((nPy) - (nEy[i]));
+            if (Math.abs(nDex)<50&&Math.abs(nDey)<50){
+                arbAgro[i]=true;
+                aimove(nDey, nDex,i);
+            } else if (arbAgro[i]){
+                aimove(nDey, nDex,i);
+            }
+            }
+        }
+    public void aimove(int nDey, int nDex, int i){
+        if (nDey > 0) {
+            nEy[i]++;
+
+        }
+        if (nDey < 0) {
+            nEy[i]--;
+
+        }
+        if (nDex > 0) {
+            nEx[i]++;
+
+        }
+        if (nDex < 0) {
+            nEx[i]--;
+
+        }
+        if (nDx > 100 || nDy > 100) {
+            arbAgro[i]=false;
+        }
+    }
+    public void aimovecheck(){
 
     }
+
 
     @Override
     public void resize(int width, int height) {
