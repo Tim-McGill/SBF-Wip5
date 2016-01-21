@@ -36,7 +36,7 @@ public class GameScreen implements Screen, InputProcessor {
     OrthographicCamera camera;
     boolean arbInput[] = new boolean[6], arbAgro[]= new boolean[90];
     int nDx,nDy,nPx=320,nPy=2432, nLDx[]= new int[4],nLDy[]= new int[4],nLDp=0,nEx[]=new int[90],nEy[]= new int[90],nKey=0;
-    int nKeyx[]=new int[2], nKeyy[] = new int[2], nKeyp=0, nTelx, nTely;
+    int nKeyx[]=new int[2], nKeyy[] = new int[2], nKeyp=0, nTelx, nTely,nDEx,nDEy;
     // other files
 //    Mobile_launch mobile_launch;
 
@@ -359,26 +359,73 @@ public class GameScreen implements Screen, InputProcessor {
         }
     public void aimove(int nDey, int nDex, int i){
         if (nDey > 0) {
-            nEy[i]++;
+            nDEy=1;
+            aimovecheck(nDex,nDey,i);
+            nEy[i]=nEy[i]+nDEy;
 
         }
         if (nDey < 0) {
-            nEy[i]--;
+            nDEy=1;
+            aimovecheck(nDex,nDey,i);
+            nEy[i]=nEy[i]-nDEy;
 
         }
         if (nDex > 0) {
-            nEx[i]++;
+            nDEx=1;
+            aimovecheck(nDex,nDey,i);
+            nEx[i]=nEx[i]+nDEx;
 
         }
         if (nDex < 0) {
-            nEx[i]--;
+            nDEx=1;
+            aimovecheck(nDex,nDey,i);
+            nEx[i]=nEx[i]-nDEx;
 
         }
         if (nDx > 100 || nDy > 100) {
             arbAgro[i]=false;
         }
     }
-    public void aimovecheck(){
+    public void aimovecheck(int nDex, int nDey, int i){
+        int noldX=nEx[i],noldY=nEy[i];
+        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
+        //moving right
+        if (nDex>0){
+            TiledMapTileLayer.Cell cell = layer.getCell(( nEx[i]+11)/32, nEy[i]/32);
+            Object property = cell.getTile().getProperties().get("blocked");
+            if (property != null) {
+                nEx[i]=noldX;
+                nEy[i]=noldY;
+                nDEx=nDEy=0;
+
+            }
+        } else if (nDex<0) {
+            TiledMapTileLayer.Cell cell = layer.getCell( nEx[i]/32, nEy[i]/32);
+            Object property = cell.getTile().getProperties().get("blocked");
+            if (property != null) {
+                nEx[i]=noldX;
+                nEy[i]=noldY;
+                nDEx=nDEy=0;
+
+            }
+        } else if (nDey<0) {
+            TiledMapTileLayer.Cell cell = layer.getCell( nEx[i] / 32,  nEy[i] / 32);
+            Object property = cell.getTile().getProperties().get("blocked");
+            if (property != null) {
+                nEx[i]=noldX;
+                nEy[i]=noldY;
+                nDEx=nDEy=0;
+
+            }
+        }  else if (nDey>0) {
+            TiledMapTileLayer.Cell cell = layer.getCell( nEx[i] / 32,  nEy[i] / 32);
+            Object property = cell.getTile().getProperties().get("blocked");
+            if (property != null) {
+                nEx[i]=noldX;
+                nEy[i]=noldY;
+                nDEx=nDEy=0;
+            }
+        }
 
     }
 

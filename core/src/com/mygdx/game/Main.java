@@ -20,7 +20,7 @@ public class Main extends Game {
         ///
         SoundTrack = Gdx.audio.newMusic(Gdx.files.internal("Adventure.mp3"));
         SoundTrack.setLooping(true);
-        SoundTrack.play();
+//        SoundTrack.play();
 
         game = this;
         setScreen(new MainMenu(game));
