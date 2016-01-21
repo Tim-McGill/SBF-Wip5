@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 /** Notes
  *  keys 0-4 are base keys 5-10 are red keys for nKx,nKy
  */
-public class Game123 extends ApplicationAdapter   {
+public class unused_Game123 extends ApplicationAdapter   {
     // vars
     SpriteBatch batch;
     Sprite spMenu;

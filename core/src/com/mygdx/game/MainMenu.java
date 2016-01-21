@@ -69,8 +69,8 @@ public class MainMenu implements Screen {
         //tbsNewGame.checked = skNewGame.getDrawable("MenuButtonUp");
         //
         tbNewGame = new TextButton("New Game", tbsNewGame);
-        tbNewGame.setSize(Gdx.graphics.getWidth()/3, Gdx.graphics.getHeight()/6);
-        tbNewGame.setPosition(Gdx.graphics.getWidth()/2-(Gdx.graphics.getWidth()/3)/2, Gdx.graphics.getHeight()/2-Gdx.graphics.getHeight()/6);
+        tbNewGame.setSize(Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 6);
+        tbNewGame.setPosition(Gdx.graphics.getWidth() / 2 - (Gdx.graphics.getWidth() / 3) / 2, Gdx.graphics.getHeight() / 2 - Gdx.graphics.getHeight() / 6);
         tbNewGame.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -79,17 +79,6 @@ public class MainMenu implements Screen {
             }
         });
         stage.addActor(tbNewGame);
-        //
-        tbContinue = new TextButton("Continue", tbsNewGame);
-        tbContinue.setSize(Gdx.graphics.getWidth()/3, Gdx.graphics.getHeight()/6);
-        tbContinue.setPosition(Gdx.graphics.getWidth()/2-(Gdx.graphics.getWidth()/3)/2, Gdx.graphics.getHeight()/2-Gdx.graphics.getHeight()/3-Gdx.graphics.getHeight()/18);
-        tbContinue.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-        });
-        stage.addActor(tbContinue);
         Gdx.input.setInputProcessor(stage);
 
     }

@@ -2,7 +2,6 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -33,7 +32,7 @@ public class Characterselect implements Screen {
     TextButton.TextButtonStyle tbsNewGame;
     BitmapFont font;
     int nSHeight, nSWidth,nPlayer=1;
-    Player player;
+    unused_Player player;
 
     Game game;
 
@@ -45,7 +44,7 @@ public class Characterselect implements Screen {
     public void show() {
         //
         // BackGround Image
-        spMenuBackground =  new Sprite(new Texture(Gdx.files.internal("_menu_blur.png")));
+        spMenuBackground =  new Sprite(new Texture(Gdx.files.internal("_menu_Blur.png")));
         spMenuBackground.setSize(320, 180);
         //camera
         camera = new OrthographicCamera();
@@ -54,7 +53,7 @@ public class Characterselect implements Screen {
         viewport.apply();
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         font = new BitmapFont();
-        player = new Player();
+        player = new unused_Player();
         font = new BitmapFont();
         //batch
         batch = new SpriteBatch();
@@ -114,7 +113,7 @@ public class Characterselect implements Screen {
         tbContinue.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new GameScreen(game));
+                game.setScreen(new Mobile_Control(game));
                 dispose();
                 return true;
             }
@@ -136,7 +135,7 @@ public class Characterselect implements Screen {
         stage.addActor(tbBack);
 
         // player
-        Player player = new Player();
+        unused_Player player = new unused_Player();
        // stage.addActor(player);
         player.setScale(10,10);
         player.setPosition(100,100);

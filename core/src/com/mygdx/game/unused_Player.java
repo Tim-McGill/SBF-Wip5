@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  *
  */
 // https://www.youtube.com/watch?v=DPIeERAm2ao
-public class Player extends Actor {
+public class unused_Player extends Actor {
     int nPlayer=1;
     @Override
     public void act(float delta)

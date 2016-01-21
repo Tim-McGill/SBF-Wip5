@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;;
  * this is the main menu screen for our game it will have buttons that do stuff.
  * most of this code is base of the deep dark taurock
  */
-public class Menu extends Game {
+public class unused_Menu extends Game {
     // vars
     Sprite spMenuBackground;
     //screenControl screenControl;
@@ -69,7 +69,7 @@ public class Menu extends Game {
         tbsNewGame.down = skNewGame.getDrawable("Button(DOWN)");
         //tbsNewGame.checked = skNewGame.getDrawable("MenuButtonUp");
         //
-        tbNewGame = new TextButton("New Game123", tbsNewGame);
+        tbNewGame = new TextButton("New unused_Game123", tbsNewGame);
         tbNewGame.setSize(100, 50);
         tbNewGame.setPosition(110, 100);
         tbNewGame.addListener(new InputListener() {

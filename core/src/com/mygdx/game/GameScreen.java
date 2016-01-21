@@ -36,9 +36,9 @@ public class GameScreen implements Screen, InputProcessor {
     OrthographicCamera camera;
     boolean arbInput[] = new boolean[6], arbAgro[]= new boolean[90];
     int nDx,nDy,nPx=320,nPy=2432, nLDx[]= new int[4],nLDy[]= new int[4],nLDp=0,nEx[]=new int[90],nEy[]= new int[90],nKey=0;
-    int nKeyx[]=new int[2], nKeyy[] = new int[2], nKeyp=0, nTelx, nTely,nDEx,nDEy;
+    int nKeyx[]=new int[2], nKeyy[] = new int[2], nKeyp=0, nTelx, nTely,nDEx,nDEy,nHealth=200, nDelay[]= new int[90];
     // other files
-//    Mobile_launch mobile_launch;
+//    Mobile_Control mobile_launch;
 
 
 
@@ -65,7 +65,6 @@ public class GameScreen implements Screen, InputProcessor {
             arbInput[2] = true;//down
         } if (keycode ==Input.Keys.SPACE){
             arbInput[5] = true;
-            System.out.println("space");
         }
         game();
         return false;
@@ -138,7 +137,7 @@ public class GameScreen implements Screen, InputProcessor {
             nDx = -2;
         }
         if (arbInput[5]) {
-
+            playerAtack();
         }
         if (!arbInput[1] && !arbInput[2]) {
             nDy = 0;
@@ -151,12 +150,11 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void show() {
-
         camera = new OrthographicCamera();
-
         imgPlayer = new Sprite(new Texture(Gdx.files.internal("player1"+".png")));
         for (int i=0; i<90; i++) {
             imgEnemies[i]= new Sprite(new Texture(Gdx.files.internal("player2"+".png")));
+            nDelay[i]=0;
             if (i<4) {
                 imgDoor[i] = new Sprite(new Texture(Gdx.files.internal("BaseFLW.png")));
                 if (i < 2) {
@@ -175,7 +173,7 @@ public class GameScreen implements Screen, InputProcessor {
         objectplace();
         Gdx.input.setInputProcessor(this);
         camera.position.set(320, 2432, 0);
-     //   mobile_launch= new Mobile_launch();
+     //   mobile_launch= new Mobile_Control();
      //   mobile_launch.create();
     }
 
@@ -360,36 +358,37 @@ public class GameScreen implements Screen, InputProcessor {
     public void aimove(int nDey, int nDex, int i){
         if (nDey > 0) {
             nDEy=1;
-            aimovecheck(nDex,nDey,i);
+            aimovecheck(nDex, nDey, i);
             nEy[i]=nEy[i]+nDEy;
 
         }
         if (nDey < 0) {
-            nDEy=1;
-            aimovecheck(nDex,nDey,i);
-            nEy[i]=nEy[i]-nDEy;
+            nDEy=-1;
+            aimovecheck(nDex, nDey, i);
+            nEy[i]=nEy[i]+nDEy;
 
         }
         if (nDex > 0) {
             nDEx=1;
-            aimovecheck(nDex,nDey,i);
+            aimovecheck(nDex, nDey, i);
             nEx[i]=nEx[i]+nDEx;
 
         }
         if (nDex < 0) {
-            nDEx=1;
-            aimovecheck(nDex,nDey,i);
-            nEx[i]=nEx[i]-nDEx;
+            nDEx=-1;
+            aimovecheck(nDex, nDey, i);
+            nEx[i]=nEx[i]+nDEx;
 
         }
         if (nDx > 100 || nDy > 100) {
             arbAgro[i]=false;
         }
+        aiAtack(nDex,nDey,1);
     }
     public void aimovecheck(int nDex, int nDey, int i){
         int noldX=nEx[i],noldY=nEy[i];
+        /// wall check
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-        //moving right
         if (nDex>0){
             TiledMapTileLayer.Cell cell = layer.getCell(( nEx[i]+11)/32, nEy[i]/32);
             Object property = cell.getTile().getProperties().get("blocked");
@@ -426,12 +425,59 @@ public class GameScreen implements Screen, InputProcessor {
                 nDEx=nDEy=0;
             }
         }
-
+        // other enemy check
+        for (int w=0; w<90; w++){
+            if (w!=i){
+                // sprite check code goes here
+            }
+        }
+    }
+    public void aiAtack(int nDex, int nDey, int i) {
+        for (int w = 0; w < 90; w++) {
+            if(nDelay[w]>40) {
+                nDelay[w]=0;
+                if (nDex > 0) {
+                    if (nDex <= 23 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
+                        nHealth--;
+                    }
+                } else if (nDex < 0) {
+                    if (nDex >= -23 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
+                        nHealth--;
+                    }
+                } else if (nDey < 0) {
+                    if (nDey >= -30 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
+                        nHealth--;
+                    }
+                } else if (nDey > 0) {
+                    if (nDey <= 30 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
+                        nHealth--;
+                    }
+                }
+            }
+            nDelay[w]++;
+        }
+        System.out.println(nHealth);
+        HealthCheck();
+    }
+    public void playerAtack(){
+        for (int w = 0; w < 90; w++) {
+            int nDex = ((nPx) - (nEx[w]));
+            int nDey = ((nPy) - (nEy[w]));
+              if(Math.abs(nDex)<15&&Math.abs(nDey)<25){
+                  nEy[w]=nEx[w]=100;
+              }
+            }
+        }
+    public void HealthCheck(){
+        if(nHealth<0){
+           game.setScreen(new MainMenu(game));
+        }
     }
 
 
     @Override
     public void resize(int width, int height) {
+
 
     }
 

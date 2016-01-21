@@ -4,6 +4,8 @@
 
 package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
 import com.mygdx.game.GameScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -13,46 +15,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 // got most of the code from here
 // http://www.gamefromscratch.com/post/2014/05/01/LibGDX-Tutorial-11-Tiled-Maps-Part-2-Adding-a-character-sprite.aspx
 
-public class Mobile_launch extends ApplicationAdapter implements InputProcessor {
+public class Mobile_Control extends ApplicationAdapter implements InputProcessor,Screen {
     // vars and other things
     Texture imgBackground, imgNub;
     SpriteBatch batch;
     int nJoyStickX = -200, nJoyStickY = -200, nJoyStickNubX = -136, nJoyStickNubY = -136, nDx, nDy, nScreen =1, nInput=1;
     boolean arbInput[] = new boolean[6];// 4 directions 1 attack 1 pause
+    Game game;
     // other files
-    GameScreen gameScreen;
-
-
-    // base code
-    //______________________________________________________________________________________________
-    @Override
-    public void create() {
-        // images
-        batch = new SpriteBatch();
-        imgBackground = new Texture("touchBackground.png");
-        imgNub = new Texture("touchKnob.png");
-        // input
-        System.out.println("Android");
-        Gdx.input.setInputProcessor(this);
-
-    }
-    public void render () {
-        System.out.println("Android_render");
-        // joy stick and buttons
-        batch.begin();
-        batch.draw(imgBackground, nJoyStickX, nJoyStickY);
-        batch.draw(imgNub, nJoyStickNubX, nJoyStickNubY);
-        batch.end();
-
-    }
-    public boolean[] getinput(){
-        return arbInput;
-    }
-    //______________________________________________________________________________________________
-
-
-    // input
-    //______________________________________________________________________________________________
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         System.out.println(screenX);
@@ -151,6 +121,38 @@ public class Mobile_launch extends ApplicationAdapter implements InputProcessor 
     @Override
     public boolean keyTyped(char character) {
         return false;
+    }
+
+    @Override
+    public void show() {
+        // images
+
+        batch = new SpriteBatch();
+        imgBackground = new Texture("touchBackground.png");
+        imgNub = new Texture("touchKnob.png");
+        // input
+        System.out.println("Android");
+       // Gdx.input.setInputProcessor(this);
+        game.setScreen(new GameScreen(game));
+
+    }
+
+    @Override
+    public void render(float delta) {
+        // joy stick and buttons
+        batch.begin();
+        batch.draw(imgBackground, nJoyStickX, nJoyStickY);
+        batch.draw(imgNub, nJoyStickNubX, nJoyStickNubY);
+        batch.end();
+
+    }
+    public Mobile_Control(Game game){
+        this.game = game;
+    }
+
+    @Override
+    public void hide() {
+
     }
     //______________________________________________________________________________________________
 }
