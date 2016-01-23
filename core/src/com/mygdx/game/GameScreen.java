@@ -26,6 +26,7 @@ public class GameScreen implements Screen, InputProcessor {
     // vars
     SpriteBatch batch;
     Sprite imgPlayer,imgDoor[]= new Sprite[4],imgKey[]= new Sprite[2],imgEnemies[]= new Sprite[90];
+
     //stage and game
     Game game;
     Stage stage;
@@ -36,7 +37,7 @@ public class GameScreen implements Screen, InputProcessor {
     OrthographicCamera camera;
     boolean arbInput[] = new boolean[6], arbAgro[]= new boolean[90];
     int nDx,nDy,nPx=320,nPy=2432, nLDx[]= new int[4],nLDy[]= new int[4],nLDp=0,nEx[]=new int[90],nEy[]= new int[90],nKey=0;
-    int nKeyx[]=new int[2], nKeyy[] = new int[2], nKeyp=0, nTelx, nTely,nDEx,nDEy,nHealth=200, nDelay[]= new int[90];
+    int nKeyx[]=new int[2], nKeyy[] = new int[2], nKeyp=0, nTelx, nTely,nDEx,nDEy,nHealth=100, nDelay[]= new int[90];
     // other files
 //    Mobile_Control mobile_launch;
 
@@ -153,7 +154,8 @@ public class GameScreen implements Screen, InputProcessor {
         camera = new OrthographicCamera();
         imgPlayer = new Sprite(new Texture(Gdx.files.internal("player1"+".png")));
         for (int i=0; i<90; i++) {
-            imgEnemies[i]= new Sprite(new Texture(Gdx.files.internal("player2"+".png")));
+            imgEnemies[i]= new Sprite(new Texture(Gdx.files.internal("goblin.png")));
+            imgEnemies[i].setScale(5);
             nDelay[i]=0;
             if (i<4) {
                 imgDoor[i] = new Sprite(new Texture(Gdx.files.internal("BaseFLW.png")));
@@ -390,7 +392,7 @@ public class GameScreen implements Screen, InputProcessor {
         /// wall check
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         if (nDex>0){
-            TiledMapTileLayer.Cell cell = layer.getCell(( nEx[i]+11)/32, nEy[i]/32);
+            TiledMapTileLayer.Cell cell = layer.getCell(( nEx[i]+29)/32, nEy[i]/32);
             Object property = cell.getTile().getProperties().get("blocked");
             if (property != null) {
                 nEx[i]=noldX;
@@ -428,7 +430,7 @@ public class GameScreen implements Screen, InputProcessor {
         // other enemy check
         for (int w=0; w<90; w++){
             if (w!=i){
-                // sprite check code goes here
+                //
             }
         }
     }
@@ -437,19 +439,19 @@ public class GameScreen implements Screen, InputProcessor {
             if(nDelay[w]>40) {
                 nDelay[w]=0;
                 if (nDex > 0) {
-                    if (nDex <= 23 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
+                    if (nDex <= 41 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
                         nHealth--;
                     }
                 } else if (nDex < 0) {
-                    if (nDex >= -23 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
+                    if (nDex >= -41 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
                         nHealth--;
                     }
                 } else if (nDey < 0) {
-                    if (nDey >= -30 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
+                    if (nDey >= -67 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
                         nHealth--;
                     }
                 } else if (nDey > 0) {
-                    if (nDey <= 30 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
+                    if (nDey <= 67 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
                         nHealth--;
                     }
                 }
