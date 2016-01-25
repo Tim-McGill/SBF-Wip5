@@ -6,10 +6,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -33,6 +35,7 @@ public class GameScreen implements Screen, InputProcessor {
     //tiled maps
     TiledMap tiledMap;
     TiledMapRenderer tiledMapRenderer;
+    ShapeRenderer shapeRenderer;
     //camera and view ports
     OrthographicCamera camera;
     boolean arbInput[] = new boolean[6], arbAgro[]= new boolean[91],bMobile;
@@ -169,6 +172,7 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
         batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
         stage = new Stage(new FillViewport(320,180,camera));
         stage.getViewport().setCamera(camera);
         stage.getViewport().apply();
@@ -183,7 +187,6 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void render(float delta) {
-
         Wallcollision();
         pickup();
         TelCheck();
@@ -196,9 +199,15 @@ public class GameScreen implements Screen, InputProcessor {
         stage.getCamera().update();
         stage.draw();
         batch.setProjectionMatrix(camera.combined);
+        shapeRenderer.setProjectionMatrix(camera.combined);
         spriterender();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.rect(nPx - 120, nPy - 90, nHealth, 10);
+        shapeRenderer.rect(nEx[90],nEy[90],nBossHealth*10,10);
+        shapeRenderer.end();
     }
-    public void spriterender(){
+    public void spriterender() {
         batch.begin();
         for (int i=0; i<91;i++) {
             batch.draw(imgEnemies[i],nEx[i],nEy[i]);
@@ -211,7 +220,6 @@ public class GameScreen implements Screen, InputProcessor {
         }
         batch.draw(imgPlayer, nPx, nPy);
         batch.end();
-
     }
     // this comes from here: https://www.youtube.com/watch?v=DOpqkaX9844
     // and from http://www.gamefromscratch.com/post/2014/06/18/LibGDX-Tutorial-11-Tiled-Maps-Part-3-Using-Properties-and-Tile-Map-animations.aspx
@@ -491,19 +499,19 @@ public class GameScreen implements Screen, InputProcessor {
                     }
                 } else {
                     if (nDex > 0) {
-                        if (nDex <= 41 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
-                            nHealth=nHealth-4;
+                        if (nDex <= 41 && nEy[w] >= nPy && nEy[w] <= nPy + 19) {
+                            nHealth=nHealth-8;
                         }
                     } else if (nDex < 0) {
-                        if (nDex >= -41 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
-                            nHealth=nHealth-4;
+                        if (nDex >= -41 && nEy[w] >= nPy && nEy[w] <= nPy + 19) {
+                            nHealth=nHealth-8;
                         }
                     } else if (nDey < 0) {
-                        if (nDey >= -67 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
-                            nHealth=nHealth-4;
+                        if (nDey >= -67 && nEx[w] >= nPx && nEx[w] <= nPx + 12) {
+                            nHealth=nHealth-8;
                         }
                     } else if (nDey > 0) {
-                        if (nDey <= 67 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
+                        if (nDey <= 67 && nEx[w] >= nPx && nEx[w] <= nPx + 12) {
                             nHealth=nHealth-4;
                         }
                     }
@@ -523,14 +531,16 @@ public class GameScreen implements Screen, InputProcessor {
                 }
             }
             else{
-                nBossHealth--;
+                if (Math.abs(nDex) < 15 && Math.abs(nDey) < 25) {
+                   nBossHealth--;
+                };
             }
             }
         }
     public void HealthCheck(){
-        if(nHealth<0){
+        if(nHealth<1){
            game.setScreen(new End(game,false,bMobile));
-        } else if(nBossHealth<0){
+        } else if(nBossHealth<1){
             game.setScreen((new End(game,true,bMobile)));
         }
     }

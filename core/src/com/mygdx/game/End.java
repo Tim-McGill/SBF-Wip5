@@ -99,7 +99,7 @@ public class End implements Screen {
         batch.begin();
         if(bGood==false) {
             font.draw(batch, "YOU DIED", Gdx.graphics.getWidth() / 2 - (Gdx.graphics.getWidth() / 3) / 2, Gdx.graphics.getHeight() / 2 + Gdx.graphics.getHeight() / 6);
-        } else{
+        } else if (bGood==true){
             font.draw(batch, "YOU WIN", Gdx.graphics.getWidth() / 2 - (Gdx.graphics.getWidth() / 3) / 2, Gdx.graphics.getHeight() / 2 + Gdx.graphics.getHeight() / 6);
         }
         batch.end();
