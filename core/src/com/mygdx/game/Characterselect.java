@@ -23,7 +23,7 @@ public class Characterselect implements Screen {
     // vars
     OrthographicCamera camera;
     Viewport viewport;
-    Sprite spMenuBackground;
+    Sprite spMenuBackground,spPlayer;
     SpriteBatch batch;
     Stage stage;
     TextureAtlas taNewGame;
@@ -32,13 +32,13 @@ public class Characterselect implements Screen {
     TextButton.TextButtonStyle tbsNewGame;
     BitmapFont font;
     int nSHeight, nSWidth,nPlayer=1;
-    unused_Player player;
-
     Game game;
+    boolean mobile;
 
 
-    public Characterselect(com.badlogic.gdx.Game game){
+    public Characterselect(com.badlogic.gdx.Game game,boolean mobile_){
         this.game = game;
+        mobile = mobile_;
     }
     @Override
     public void show() {
@@ -46,6 +46,10 @@ public class Characterselect implements Screen {
         // BackGround Image
         spMenuBackground =  new Sprite(new Texture(Gdx.files.internal("_menu_Blur.png")));
         spMenuBackground.setSize(320, 180);
+        // player image
+        spPlayer = new Sprite(new Texture(Gdx.files.internal("player"+nPlayer+".png")));
+        spPlayer.setSize(11,18);
+        spPlayer.setPosition(160,90);
         //camera
         camera = new OrthographicCamera();
         // viewport
@@ -53,7 +57,7 @@ public class Characterselect implements Screen {
         viewport.apply();
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         font = new BitmapFont();
-        player = new unused_Player();
+        //player = new unused_Player();
         font = new BitmapFont();
         //batch
         batch = new SpriteBatch();
@@ -84,6 +88,8 @@ public class Characterselect implements Screen {
                     nPlayer = 4;
                     //player.playerset(nPlayer);
                 }
+                spPlayer = new Sprite(new Texture(Gdx.files.internal("player"+nPlayer+".png")));
+                spPlayer.setPosition(160,90);
                 return true;
             }
         });
@@ -102,6 +108,8 @@ public class Characterselect implements Screen {
                     nPlayer = 1;
                    // player.playerset(nPlayer);
                 }
+                spPlayer = new Sprite(new Texture(Gdx.files.internal("player"+nPlayer+".png")));
+                spPlayer.setPosition(160,90);
                 return true;
             }
         });
@@ -113,7 +121,7 @@ public class Characterselect implements Screen {
         tbContinue.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new Mobile_Control(game));
+                game.setScreen(new GameScreen(game, nPlayer,mobile));
                 dispose();
                 return true;
             }
@@ -127,7 +135,7 @@ public class Characterselect implements Screen {
         tbBack.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new MainMenu(game));
+                game.setScreen(new MainMenu(game,mobile));
                 dispose();
                 return true;
             }
@@ -149,6 +157,7 @@ public class Characterselect implements Screen {
         stage.act();
         batch.begin();
         spMenuBackground.draw(batch);
+        spPlayer.draw(batch);
         batch.end();
         stage.draw();
 

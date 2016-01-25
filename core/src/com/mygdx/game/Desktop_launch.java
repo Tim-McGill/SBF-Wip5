@@ -15,7 +15,7 @@ public class Desktop_launch extends ApplicationAdapter implements InputProcessor
   int nScreen =1;
     boolean arbInput[] = new boolean[6];// 4 directions 1 attack 1 pause
     // other files
-    Main main;
+    Main_mobile main;
     GameScreen gameScreen;
 
     // base code
@@ -23,7 +23,7 @@ public class Desktop_launch extends ApplicationAdapter implements InputProcessor
     @Override
     public void create() {
         // other files
-        main = new Main();
+        main = new Main_mobile();
         main.create();
         Gdx.input.setInputProcessor(this);
 

@@ -25,7 +25,7 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 public class GameScreen implements Screen, InputProcessor {
     // vars
     SpriteBatch batch;
-    Sprite imgPlayer,imgDoor[]= new Sprite[4],imgKey[]= new Sprite[2],imgEnemies[]= new Sprite[90];
+    Sprite imgPlayer,imgDoor[]= new Sprite[4],imgKey[]= new Sprite[2],imgEnemies[]= new Sprite[91];
 
     //stage and game
     Game game;
@@ -35,22 +35,18 @@ public class GameScreen implements Screen, InputProcessor {
     TiledMapRenderer tiledMapRenderer;
     //camera and view ports
     OrthographicCamera camera;
-    boolean arbInput[] = new boolean[6], arbAgro[]= new boolean[90];
-    int nDx,nDy,nPx=320,nPy=2432, nLDx[]= new int[4],nLDy[]= new int[4],nLDp=0,nEx[]=new int[90],nEy[]= new int[90],nKey=0;
-    int nKeyx[]=new int[2], nKeyy[] = new int[2], nKeyp=0, nTelx, nTely,nDEx,nDEy,nHealth=100, nDelay[]= new int[90];
+    boolean arbInput[] = new boolean[6], arbAgro[]= new boolean[91],bMobile;
+    int nDx,nDy,nPx=320,nPy=2432, nLDx[]= new int[4],nLDy[]= new int[4],nLDp=0,nEx[]=new int[91],nEy[]= new int[91],nKey=0,nPlayer=1;
+    int nKeyx[]=new int[2], nKeyy[] = new int[2], nKeyp=0, nTelx, nTely,nDEx,nDEy,nHealth=100, nDelay[]= new int[91],nBossHealth=8;
     // other files
-//    Mobile_Control mobile_launch;
 
 
 
-    public GameScreen(Game game){
+    public GameScreen(Game game, int nPlayer_,boolean mobile_){
         this.game = game;
+        nPlayer = nPlayer_;
+        bMobile =mobile_;
     }
-
-    public void input(boolean arbInput_[]) {
-       arbInput=arbInput_;
-    }
-
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.LEFT){
@@ -99,6 +95,16 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        System.out.println(screenX+" "+screenY);
+        if (screenX < Gdx.graphics.getWidth() / 2) {
+        //    nJoyStickX = screenX - 100;
+         //   nJoyStickY = Gdx.graphics.getHeight() - screenY - 100;
+         //   nJoyStickNubX = nJoyStickX + 64;
+         //   nJoyStickNubY = nJoyStickY + 64;
+        }
+        if (screenX > Gdx.graphics.getWidth() / 2) {
+            arbInput[5] = true; //attack
+        }
 
         return false;
     }
@@ -147,13 +153,11 @@ public class GameScreen implements Screen, InputProcessor {
             nDx = 0;
         }
     }
-
-
     @Override
     public void show() {
         camera = new OrthographicCamera();
-        imgPlayer = new Sprite(new Texture(Gdx.files.internal("player1"+".png")));
-        for (int i=0; i<90; i++) {
+        imgPlayer = new Sprite(new Texture(Gdx.files.internal("player"+nPlayer+".png")));
+        for (int i=0; i<91; i++) {
             imgEnemies[i]= new Sprite(new Texture(Gdx.files.internal("goblin.png")));
             imgEnemies[i].setScale(5);
             nDelay[i]=0;
@@ -170,17 +174,16 @@ public class GameScreen implements Screen, InputProcessor {
         stage.getViewport().apply();
 
         // tiled map
-        tiledMap = new TmxMapLoader().load("Testlevel.tmx");
+        tiledMap = new TmxMapLoader().load("level1.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         objectplace();
-        Gdx.input.setInputProcessor(this);
-        camera.position.set(320, 2432, 0);
-     //   mobile_launch= new Mobile_Control();
-     //   mobile_launch.create();
+            Gdx.input.setInputProcessor(this);
+        camera.position.set(nPx, nPy, 0);
     }
 
     @Override
     public void render(float delta) {
+
         Wallcollision();
         pickup();
         TelCheck();
@@ -194,12 +197,10 @@ public class GameScreen implements Screen, InputProcessor {
         stage.draw();
         batch.setProjectionMatrix(camera.combined);
         spriterender();
-        //mobile_launch.render();
     }
     public void spriterender(){
         batch.begin();
-        //  mobile_launch.getinput();
-        for (int i=0; i<90;i++) {
+        for (int i=0; i<91;i++) {
             batch.draw(imgEnemies[i],nEx[i],nEy[i]);
             if (i < 4) {
                 batch.draw(imgDoor[i], nLDx[i], nLDy[i]);
@@ -222,27 +223,27 @@ public class GameScreen implements Screen, InputProcessor {
                 TiledMapTileLayer.Cell cell = layer.getCell(x, y);
                 Object doors = cell.getTile().getProperties().get("Door");
                 Object Keys= cell.getTile().getProperties().get("keys");
+                Object Tel_= cell.getTile().getProperties().get("Tel_");
+                Object BasicEnemies= cell.getTile().getProperties().get("BE");
+                Object Player = cell.getTile().getProperties().get("player");
+                Object boss = cell.getTile().getProperties().get("boss");
                 if (doors != null) {
                     nLDx[nLDp] = x * 32;
                     nLDy[nLDp] = y * 32;
                     nLDp++;
                 }
                 if(Keys != null){
-                    System.out.println("key at "+x+y);
                     nKeyx[nKeyp] = x * 32;
                     nKeyy[nKeyp] = y * 32;
                     nKeyp++;
                 }
-                Object Tel_= cell.getTile().getProperties().get("Tel_");
                 if(Tel_ != null){
                      nTelx = x * 32;
                      nTely = y * 32;
                 }
-                Object BasicEnemies= cell.getTile().getProperties().get("BE");
                 if(BasicEnemies != null){
                     for(int i =0; i<10;i++) {
                         int nW= i + 10*(nNumES);
-                        System.out.println(nW);
                         if(i<2){
                             nEx[nW]=(x * 32)+4*i;
                             nEy[nW]=(y * 32)+3*i;
@@ -258,6 +259,14 @@ public class GameScreen implements Screen, InputProcessor {
                         }
                     }
                     nNumES++;
+                }
+                if(Player!=null){
+                    nPx=16+x*32;
+                    nPy=8+y*32;
+                }
+                if(boss!=null){
+                    nEx[90]=x*32;
+                    nEy[90]=y*32;
                 }
             }
         }
@@ -277,7 +286,7 @@ public class GameScreen implements Screen, InputProcessor {
           if (property != null) {
             nPx=noldX;
             nPy=noldY;
-              nDx=nDy=0;
+              nDx=0;
           }
       } else if (nDx<0) {
           TiledMapTileLayer.Cell cell = layer.getCell(nPx/32,nPy/32);
@@ -285,7 +294,7 @@ public class GameScreen implements Screen, InputProcessor {
           if (property != null) {
               nPx=noldX;
              // nPy=noldY;
-              nDx=nDy=0;
+              nDx=0;
           }
       } else if (nDy<0) {
           TiledMapTileLayer.Cell cell = layer.getCell(nPx / 32, nPy / 32);
@@ -293,7 +302,7 @@ public class GameScreen implements Screen, InputProcessor {
           if (property != null) {
               //nPx = noldX;
               nPy=noldY;
-              nDy=nDx = 0;
+              nDy = 0;
           }
       }  else if (nDy>0) {
           TiledMapTileLayer.Cell cell = layer.getCell(nPx / 32, nPy / 32);
@@ -301,7 +310,7 @@ public class GameScreen implements Screen, InputProcessor {
           if (property != null) {
               //nPx = noldX;
               nPy = noldY;
-              nDy=nDx = 0;
+              nDy= 0;
           }
       }
     }
@@ -346,7 +355,7 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     public void ai (){
-        for (int i=0; i<90; i++) {
+        for (int i=0; i<91; i++) {
                 int nDex = ((nPx) - (nEx[i]));
                 int nDey = ((nPy) - (nEy[i]));
             if (Math.abs(nDex)<50&&Math.abs(nDey)<50){
@@ -385,7 +394,7 @@ public class GameScreen implements Screen, InputProcessor {
         if (nDx > 100 || nDy > 100) {
             arbAgro[i]=false;
         }
-        aiAtack(nDex,nDey,1);
+        aiAtack(nDex,nDey,i);
     }
     public void aimovecheck(int nDex, int nDey, int i){
         int noldX=nEx[i],noldY=nEy[i];
@@ -430,49 +439,99 @@ public class GameScreen implements Screen, InputProcessor {
         // other enemy check
         for (int w=0; w<90; w++){
             if (w!=i){
-                //
+                if (nDex > 0) {
+                    if (nEx[i]+10>=nEx[w]&&nEy[i]>=nEy[w]&&nEy[i]<=nEy[w]){
+                        nEx[i]=noldX;
+                        nDEx=0;
+                        break;
+                    }
+                } else if (nDex < 0) {
+                    if (nEx[i]<=nEx[w]+10&&nEy[i]>=nEy[w]&&nEy[i]<=nEy[w]){
+                        nEx[i]=noldX;
+                       // nDEx=0;
+                        break;
+                    }
+                } else if (nDey < 0) {
+                    if (nEy[i]+10>=nEy[w]&&nEx[i]>=nEx[w]&&nEx[i]<=nEx[w]){
+                        nEy[i]=noldY;
+                        nDy=0;
+                        break;
+                    }
+                } else if (nDey > 0) {
+                    if (nEy[i]<=nEy[w]+10&&nEx[i]>=nEx[w]&&nEx[i]<=nEx[w]){
+                        nEy[i]=noldY;
+                        nDy=0;
+                        break;
+                    }
+                }
             }
         }
     }
     public void aiAtack(int nDex, int nDey, int i) {
-        for (int w = 0; w < 90; w++) {
+        for (int w = 0; w < 91; w++) {
             if(nDelay[w]>40) {
                 nDelay[w]=0;
-                if (nDex > 0) {
-                    if (nDex <= 41 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
-                        nHealth--;
+                if(w<90) {
+                    if (nDex > 0) {
+                        if (nDex <= 41 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
+                            nHealth--;
+                        }
+                    } else if (nDex < 0) {
+                        if (nDex >= -41 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
+                            nHealth--;
+                        }
+                    } else if (nDey < 0) {
+                        if (nDey >= -67 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
+                            nHealth--;
+                        }
+                    } else if (nDey > 0) {
+                        if (nDey <= 67 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
+                            nHealth--;
+                        }
                     }
-                } else if (nDex < 0) {
-                    if (nDex >= -41 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
-                        nHealth--;
-                    }
-                } else if (nDey < 0) {
-                    if (nDey >= -67 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
-                        nHealth--;
-                    }
-                } else if (nDey > 0) {
-                    if (nDey <= 67 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
-                        nHealth--;
+                } else {
+                    if (nDex > 0) {
+                        if (nDex <= 41 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
+                            nHealth=nHealth-4;
+                        }
+                    } else if (nDex < 0) {
+                        if (nDex >= -41 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
+                            nHealth=nHealth-4;
+                        }
+                    } else if (nDey < 0) {
+                        if (nDey >= -67 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
+                            nHealth=nHealth-4;
+                        }
+                    } else if (nDey > 0) {
+                        if (nDey <= 67 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
+                            nHealth=nHealth-4;
+                        }
                     }
                 }
             }
             nDelay[w]++;
         }
-        System.out.println(nHealth);
         HealthCheck();
     }
     public void playerAtack(){
-        for (int w = 0; w < 90; w++) {
+        for (int w = 0; w < 91; w++) {
             int nDex = ((nPx) - (nEx[w]));
             int nDey = ((nPy) - (nEy[w]));
-              if(Math.abs(nDex)<15&&Math.abs(nDey)<25){
-                  nEy[w]=nEx[w]=100;
-              }
+            if(w<90) {
+                if (Math.abs(nDex) < 15 && Math.abs(nDey) < 25) {
+                    nEy[w] = nEx[w] = 100;
+                }
+            }
+            else{
+                nBossHealth--;
+            }
             }
         }
     public void HealthCheck(){
         if(nHealth<0){
-           game.setScreen(new MainMenu(game));
+           game.setScreen(new End(game,false,bMobile));
+        } else if(nBossHealth<0){
+            game.setScreen((new End(game,true,bMobile)));
         }
     }
 

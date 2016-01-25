@@ -1,11 +1,9 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -37,7 +35,7 @@ public class unused_Menu extends Game {
     TextButton.TextButtonStyle tbsNewGame;
     BitmapFont font;
     int nSHeight, nSWidth;
-    Main main;
+    Main_mobile main;
 
 
     //
@@ -45,7 +43,7 @@ public class unused_Menu extends Game {
         //screenControl = new screenControl();
         batch = new SpriteBatch();
         font = new BitmapFont();
-        main = new Main();
+        main = new Main_mobile();
         // BackGround Image
         spMenuBackground =  new Sprite(new Texture(Gdx.files.internal("background.png")));
         spMenuBackground.setSize(320, 180);

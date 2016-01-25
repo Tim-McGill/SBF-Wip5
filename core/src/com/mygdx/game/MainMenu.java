@@ -35,10 +35,12 @@ public class MainMenu implements Screen {
     BitmapFont font;
     int nSHeight, nSWidth;
     Game game;
+    boolean mobile;
 
 
-    public MainMenu(Game game){
+    public MainMenu(Game game,boolean mobile_){
         this.game = game;
+        mobile = mobile_;
     }
     @Override
     public void show() {
@@ -74,7 +76,7 @@ public class MainMenu implements Screen {
         tbNewGame.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new Characterselect(game));
+                game.setScreen(new Characterselect(game,mobile));
                 return true;
             }
         });

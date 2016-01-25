@@ -2,9 +2,7 @@ package com.mygdx.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-//import com.mygdx.game.Desktop_launch;
-import com.mygdx.game.Main;
+import com.mygdx.game.Main_desktop;
 
 public class DesktopLauncher {
 	static int nWidth=1280,nHight=720;
@@ -18,6 +16,6 @@ public class DesktopLauncher {
 		config.width=nWidth;
 		config.fullscreen=bFullScreen;
 		config.title = "Salty";
-		new LwjglApplication(new Main(), config);
+		new LwjglApplication(new Main_desktop(), config);
 	}
 }

@@ -10,7 +10,8 @@ import com.badlogic.gdx.audio.Music;
  * Created by tim on 12/3/2015.
 
  */
-public class Main extends Game {
+public class Main_mobile extends Game {
+    boolean mobile;
     Game game;
     // sound
     Music SoundTrack;
@@ -23,7 +24,7 @@ public class Main extends Game {
 //        SoundTrack.play();
 
         game = this;
-        setScreen(new MainMenu(game));
+        setScreen(new MainMenu(game,true));
     }
     public void render() {
         super.render();

@@ -1,7 +1,6 @@
 /**
  * Mobile Launcher, this contains the Mobile controls, it also loads in the game
  */
-
 package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
@@ -11,15 +10,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 // got most of the code from here
 // http://www.gamefromscratch.com/post/2014/05/01/LibGDX-Tutorial-11-Tiled-Maps-Part-2-Adding-a-character-sprite.aspx
-
 public class Mobile_Control extends ApplicationAdapter implements InputProcessor,Screen {
     // vars and other things
     Texture imgBackground, imgNub;
     SpriteBatch batch;
-    int nJoyStickX = -200, nJoyStickY = -200, nJoyStickNubX = -136, nJoyStickNubY = -136, nDx, nDy, nScreen =1, nInput=1;
+    int nJoyStickX = -200, nJoyStickY = -200, nJoyStickNubX = -136, nJoyStickNubY = -136, nDx, nDy, nScreen =1, nInput=1,nPlayer;
     boolean arbInput[] = new boolean[6];// 4 directions 1 attack 1 pause
     Game game;
     // other files
@@ -37,8 +34,8 @@ public class Mobile_Control extends ApplicationAdapter implements InputProcessor
                 if (screenX > Gdx.graphics.getWidth() / 2) {
                     arbInput[5] = true; //attack
                 }
-                //gameScreen.input(arbInput);
             }
+
         return false;
     }
     @Override
@@ -56,6 +53,7 @@ public class Mobile_Control extends ApplicationAdapter implements InputProcessor
         } else if(nInput==2) {
             // thomas' touch around player code will go here.
         }
+        render();
         return false;
     }
     @Override
@@ -122,37 +120,31 @@ public class Mobile_Control extends ApplicationAdapter implements InputProcessor
     public boolean keyTyped(char character) {
         return false;
     }
-
     @Override
     public void show() {
+//        game.setScreen(new GameScreen(game, nPlayer, true));
         // images
-
         batch = new SpriteBatch();
         imgBackground = new Texture("touchBackground.png");
         imgNub = new Texture("touchKnob.png");
         // input
         System.out.println("Android");
-       // Gdx.input.setInputProcessor(this);
-        game.setScreen(new GameScreen(game));
+        Gdx.input.setInputProcessor(this);
 
     }
-
     @Override
     public void render(float delta) {
+        System.out.println("Mobile");
         // joy stick and buttons
         batch.begin();
         batch.draw(imgBackground, nJoyStickX, nJoyStickY);
         batch.draw(imgNub, nJoyStickNubX, nJoyStickNubY);
         batch.end();
-
     }
-    public Mobile_Control(Game game){
-        this.game = game;
+    public Mobile_Control(Game game ){
+        this.game = game; ;
     }
-
     @Override
     public void hide() {
-
     }
-    //______________________________________________________________________________________________
 }
