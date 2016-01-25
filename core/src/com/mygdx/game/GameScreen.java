@@ -368,7 +368,7 @@ public class GameScreen implements Screen, InputProcessor {
         for (int i=0; i<91; i++) {
                 int nDex = ((nPx) - (nEx[i]));
                 int nDey = ((nPy) - (nEy[i]));
-            if (Math.abs(nDex)<100&&Math.abs(nDey)<100){
+            if (Math.abs(nDex)<80&&Math.abs(nDey)<80){
                 arbAgro[i]=true;
                 aimove(nDey, nDex,i);
             } else if (arbAgro[i]){
