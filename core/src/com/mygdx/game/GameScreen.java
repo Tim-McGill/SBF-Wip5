@@ -41,6 +41,7 @@ public class GameScreen implements Screen, InputProcessor {
     boolean arbInput[] = new boolean[6], arbAgro[]= new boolean[91],bMobile;
     int nDx,nDy,nPx=320,nPy=2432, nLDx[]= new int[4],nLDy[]= new int[4],nLDp=0,nEx[]=new int[91],nEy[]= new int[91],nKey=0,nPlayer=1;
     int nKeyx[]=new int[2], nKeyy[] = new int[2], nKeyp=0, nTelx, nTely,nDEx,nDEy,nHealth=100, nDelay[]= new int[91],nBossHealth=8;
+    int nEHealth[] = new int[91];
     // other files
 
 
@@ -163,6 +164,7 @@ public class GameScreen implements Screen, InputProcessor {
         for (int i=0; i<91; i++) {
             imgEnemies[i]= new Sprite(new Texture(Gdx.files.internal("goblin.png")));
             imgEnemies[i].setScale(5);
+            nEHealth[i]=2;
             nDelay[i]=0;
             if (i<4) {
                 imgDoor[i] = new Sprite(new Texture(Gdx.files.internal("BaseFLW.png")));
@@ -366,7 +368,7 @@ public class GameScreen implements Screen, InputProcessor {
         for (int i=0; i<91; i++) {
                 int nDex = ((nPx) - (nEx[i]));
                 int nDey = ((nPy) - (nEy[i]));
-            if (Math.abs(nDex)<50&&Math.abs(nDey)<50){
+            if (Math.abs(nDex)<100&&Math.abs(nDey)<100){
                 arbAgro[i]=true;
                 aimove(nDey, nDex,i);
             } else if (arbAgro[i]){
@@ -399,7 +401,7 @@ public class GameScreen implements Screen, InputProcessor {
             nEx[i]=nEx[i]+nDEx;
 
         }
-        if (nDx > 100 || nDy > 100) {
+        if (nDx > 220 || nDy > 220) {
             arbAgro[i]=false;
         }
         aiAtack(nDex,nDey,i);
@@ -481,19 +483,19 @@ public class GameScreen implements Screen, InputProcessor {
                 nDelay[w]=0;
                 if(w<90) {
                     if (nDex > 0) {
-                        if (nDex <= 41 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
+                        if (nDex <= 21 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
                             nHealth--;
                         }
                     } else if (nDex < 0) {
-                        if (nDex >= -41 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
+                        if (nDex >= -21 && nEy[w] >= nPy && nEy[w] <= nPy + 18) {
                             nHealth--;
                         }
                     } else if (nDey < 0) {
-                        if (nDey >= -67 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
+                        if (nDey >= -47 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
                             nHealth--;
                         }
                     } else if (nDey > 0) {
-                        if (nDey <= 67 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
+                        if (nDey <= 47 && nEx[w] >= nPx && nEx[w] <= nPx + 11) {
                             nHealth--;
                         }
                     }
@@ -527,7 +529,10 @@ public class GameScreen implements Screen, InputProcessor {
             int nDey = ((nPy) - (nEy[w]));
             if(w<90) {
                 if (Math.abs(nDex) < 15 && Math.abs(nDey) < 25) {
-                    nEy[w] = nEx[w] = 100;
+                    nEHealth[w]--;
+                    if(nEHealth[w]<1) {
+                        nEy[w] = nEx[w] = 100;
+                    }
                 }
             }
             else{
