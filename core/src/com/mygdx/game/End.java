@@ -85,8 +85,6 @@ public class End implements Screen {
         });
         stage.addActor(tbNewGame);
         Gdx.input.setInputProcessor(stage);
-
-
     }
 
     @Override
