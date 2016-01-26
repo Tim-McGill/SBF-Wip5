@@ -296,31 +296,31 @@ public class GameScreen implements Screen, InputProcessor {
           if (property != null) {
             nPx=noldX;
             nPy=noldY;
-              nDx=0;
+              nDx=nDy=0;
           }
       } else if (nDx<0) {
           TiledMapTileLayer.Cell cell = layer.getCell(nPx/32,nPy/32);
           Object property = cell.getTile().getProperties().get("blocked");
           if (property != null) {
               nPx=noldX;
-             // nPy=noldY;
-              nDx=0;
+              nPy=noldY;
+              nDx=nDy=0;
           }
       } else if (nDy<0) {
           TiledMapTileLayer.Cell cell = layer.getCell(nPx / 32, nPy / 32);
           Object property = cell.getTile().getProperties().get("blocked");
           if (property != null) {
-              //nPx = noldX;
+              nPx = noldX;
               nPy=noldY;
-              nDy = 0;
+              nDy=nDx = 0;
           }
       }  else if (nDy>0) {
           TiledMapTileLayer.Cell cell = layer.getCell(nPx / 32, nPy / 32);
           Object property = cell.getTile().getProperties().get("blocked");
           if (property != null) {
-              //nPx = noldX;
+              nPx = noldX;
               nPy = noldY;
-              nDy= 0;
+              nDy=nDx= 0;
           }
       }
     }
