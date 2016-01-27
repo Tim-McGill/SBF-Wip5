@@ -23,6 +23,8 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 /**
  * Created by tim on 2016-01-03.
  * tiled map with stage came from here: http://mymilkedeek.net/2014/03/30/libgdxs-scene2d-and-tiledmap/
+ *
+ *  every thing is in its own object/method. I will have a list and description in a future up date
  */
 public class GameScreen implements Screen, InputProcessor {
     // vars
@@ -42,14 +44,15 @@ public class GameScreen implements Screen, InputProcessor {
     int nDx,nDy,nPx=320,nPy=2432, nLDx[]= new int[4],nLDy[]= new int[4],nLDp=0,nEx[]=new int[91],nEy[]= new int[91],nKey=0,nPlayer=1;
     int nKeyx[]=new int[2], nKeyy[] = new int[2], nKeyp=0, nTelx, nTely,nDEx,nDEy,nHealth=100, nDelay[]= new int[91],nBossHealth=8;
     int nEHealth[] = new int[91];
-    // other files
-
-
-
+    // end of vars sorry for the massive amounts of ints
     public GameScreen(Game game, int nPlayer_,boolean mobile_){
         this.game = game;
         nPlayer = nPlayer_;
         bMobile =mobile_;
+    }
+    public void Mobile_intput(boolean arbInput_[]){
+        arbInput=arbInput_;
+        game();
     }
     @Override
     public boolean keyDown(int keycode) {
@@ -99,17 +102,6 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println(screenX+" "+screenY);
-        if (screenX < Gdx.graphics.getWidth() / 2) {
-        //    nJoyStickX = screenX - 100;
-         //   nJoyStickY = Gdx.graphics.getHeight() - screenY - 100;
-         //   nJoyStickNubX = nJoyStickX + 64;
-         //   nJoyStickNubY = nJoyStickY + 64;
-        }
-        if (screenX > Gdx.graphics.getWidth() / 2) {
-            arbInput[5] = true; //attack
-        }
-
         return false;
     }
 

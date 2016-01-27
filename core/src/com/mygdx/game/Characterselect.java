@@ -121,7 +121,11 @@ public class Characterselect implements Screen {
         tbContinue.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new GameScreen(game, nPlayer,mobile));
+                if(mobile){
+                    game.setScreen(new Mobile_Control(game,nPlayer));
+                }else {
+                    game.setScreen(new GameScreen(game, nPlayer, mobile));
+                }
                 dispose();
                 return true;
             }

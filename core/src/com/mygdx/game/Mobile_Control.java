@@ -19,6 +19,7 @@ public class Mobile_Control extends ApplicationAdapter implements InputProcessor
     int nJoyStickX = -200, nJoyStickY = -200, nJoyStickNubX = -136, nJoyStickNubY = -136, nDx, nDy, nScreen =1, nInput=1,nPlayer;
     boolean arbInput[] = new boolean[6];// 4 directions 1 attack 1 pause
     Game game;
+    GameScreen gameScreen;
     // other files
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -49,9 +50,10 @@ public class Mobile_Control extends ApplicationAdapter implements InputProcessor
             for (int i = 0; i < 5; i++) {
                 arbInput[i] = false;
             }
-            //main.input(arbInput);
+            gameScreen.Mobile_intput(arbInput);
         } else if(nInput==2) {
             // thomas' touch around player code will go here.
+            // we didn't have enough time to implement
         }
         render();
         return false;
@@ -95,7 +97,7 @@ public class Mobile_Control extends ApplicationAdapter implements InputProcessor
                         arbInput[4] = true;//left
                         arbInput[3] = false;
                     }
-                   // gameScreen.input(arbInput);
+                   gameScreen.Mobile_intput(arbInput);
                 }
         return false;
     }
@@ -122,7 +124,8 @@ public class Mobile_Control extends ApplicationAdapter implements InputProcessor
     }
     @Override
     public void show() {
-//        game.setScreen(new GameScreen(game, nPlayer, true));
+        gameScreen = new GameScreen(game,nPlayer,true);
+        gameScreen.show();
         // images
         batch = new SpriteBatch();
         imgBackground = new Texture("touchBackground.png");
@@ -134,15 +137,16 @@ public class Mobile_Control extends ApplicationAdapter implements InputProcessor
     }
     @Override
     public void render(float delta) {
-        System.out.println("Mobile");
+        gameScreen.render(delta);
         // joy stick and buttons
         batch.begin();
         batch.draw(imgBackground, nJoyStickX, nJoyStickY);
         batch.draw(imgNub, nJoyStickNubX, nJoyStickNubY);
         batch.end();
     }
-    public Mobile_Control(Game game ){
+    public Mobile_Control(Game game, int nPlayer_ ){
         this.game = game; ;
+        nPlayer=nPlayer_;
     }
     @Override
     public void hide() {
